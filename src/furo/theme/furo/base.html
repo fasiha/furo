@@ -78,7 +78,20 @@
   </head>
   <body>
     <script>
-      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+      {
+        const url = new URL(document.location);
+        const themeParam = url.searchParams.get("theme");
+        try {
+          document.body.dataset.theme = (localStorage && localStorage.getItem("theme")) || themeParam || "auto";
+        } catch(e) {
+          if(e instanceof DOMException) {
+            document.body.dataset.theme = themeParam || "auto";
+          }
+          else {
+            throw e;
+          }
+        }
+      }
     </script>
     {% block body %}{% endblock %}
 
